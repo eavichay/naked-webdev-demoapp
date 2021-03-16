@@ -1,0 +1,5 @@
+export const TASK_EVENTS = {
+  TASK_UPDATED: 1,
+  TASK_ADDED: 2,
+  TASK_REMOVED: 3
+};

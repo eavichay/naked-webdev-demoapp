@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naked Task-Ninja</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    #task-container {
+      display: flex;
+      max-height: 100%;
+      overflow: hidden;
+    }
+    task-list {
+    }
+    app-header {
+      width: 100%;
+      padding: 0.25em 1em;
+    }
+  </style>
+</head>
+<body>
+  <app-header></app-header>
+  <div id="task-container">
+    <task-list state="todo"></task-list>
+    <task-list state="in-progress"></task-list>
+    <task-list state="done"></task-list>
+  </div>
+
+  <script type="module" src="./app/index.js"></script>
+</body>
+</html>
