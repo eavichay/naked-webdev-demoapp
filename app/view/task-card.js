@@ -1,4 +1,5 @@
 import { DependencyMixin } from '../core/dependency.js';
+import { Component } from '../core/component.js';
 
 const template = /*html*/`
 <style>
@@ -26,7 +27,7 @@ const template = /*html*/`
     font-weight: bold;
   }
 
-  #task-id {
+  #taskId {
     position: absolute;
     top: 0;
     right: 0;
@@ -49,23 +50,22 @@ const template = /*html*/`
   }
 </style>
 <input placeholder="Untitled Task" id="title">
-<textarea placeholder="No Description" rows="8"></textarea>
+<textarea id="description" placeholder="No Description" rows="8"></textarea>
 <button id="todo" data-action="state">Todo</button>
 <button id="in-progress" data-action="state">In-Progress</button>
 <button id="done" data-action="state">Done</button>
 <hr/>
 <button id="delete" data-action="delete">DELETE</button>
-<span id="task-id"><span>
+<span id="taskId"><span>
 `;
 
-class TaskView extends HTMLElement {
+class TaskView extends Component {
 
   static inject = ["tasks"];
+  static template = template;
 
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
-    this.render();
     this.shadowRoot.querySelectorAll('button').forEach(button => {
       button.addEventListener('click', (e) => {
         if (button.dataset.action === 'state') {
@@ -74,17 +74,15 @@ class TaskView extends HTMLElement {
         }
       });
     });
-    this.shadowRoot.querySelector('textarea').addEventListener('change', () => {
-      const description = this.shadowRoot.querySelector('textarea').value;
-      this.task.description = description;
+    this.$.description.addEventListener('change', () => {
+      this.task.description = this.$.description.value;
     });
-    this.shadowRoot.querySelector('#title').addEventListener('change', () => {
-      const description = this.shadowRoot.querySelector('#title').value;
-      this.task.title = description;
-    });
-    this.shadowRoot.querySelector('#delete').addEventListener('click', () => {
+    this.$.title.onchange = () => {
+      this.task.title = this.$.title.value;
+    };
+    this.$.delete.onclick = () => {
       this.inject.tasks.remove(this.task);
-    });
+    };
   }
 
   get task() {
@@ -102,9 +100,9 @@ class TaskView extends HTMLElement {
   }
   
   update() {
-    this.shadowRoot.querySelector('#title').value = this.task.title;
-    this.shadowRoot.querySelector('textarea').value = this.task.description;
-    this.shadowRoot.querySelector('#task-id').textContent = this.task.taskId;
+    this.$.title.value = this.task.title;
+    this.$.description.value = this.task.description;
+    this.$.taskId.textContent = this.task.taskId;
   }
 }
 

@@ -1,3 +1,4 @@
+import { Component } from '../core/component.js';
 import { DependencyMixin } from '../core/dependency.js';
 import { TASK_EVENTS } from '../events.js';
 
@@ -33,16 +34,16 @@ const template = /*html*/`
 <div id="summary"></div>
 `
 
-class TaskListView extends HTMLElement {
+class TaskListView extends Component {
   static inject = ['taskEventBus', 'tasks'];
+  static template = template;
 
   static observedAttributes = ['state'];
 
   constructor() {
     super();
     this.unsubscribers = [];
-    this.attachShadow({ mode: 'open' });
-    this._render = this._render.bind(this);
+    this._render = () => this.render();
   }
 
   connectedCallback() {
@@ -57,38 +58,33 @@ class TaskListView extends HTMLElement {
   }
 
   attributeChangedCallback() {
-    this._render();
+    this.render();
   }
 
   get state() {
     return this.getAttribute('state');
   }
 
-  _render() {
+  render() {
     if (this.isRendering) {
       requestAnimationFrame(() => {
-        this._render();
+        this.render();
       });
       return;
     }
     requestAnimationFrame(() => {
       this.isRendering = true;
-      this._doRender();
+      const tasks = this.inject.tasks.tasks.filter(task => task.state === this.state);
+      this.$.title.textContent = `${this.state} (${tasks.length})`;
+      this.$.cards.innerHTML = '';
+      const cards = tasks.map(task => {
+        const cardElem = document.createElement('task-card');
+        cardElem.task = task;
+        return cardElem;
+      });
+      this.$.cards.append(...cards);
       this.isRendering = false;
     });
-  }
-
-  _doRender() {
-    const tasks = this.inject.tasks.tasks.filter(task => task.state === this.state);
-    this.shadowRoot.innerHTML = template;
-    this.shadowRoot.querySelector('#title').textContent = `${this.state} (${tasks.length})`;
-    const container = this.shadowRoot.querySelector('#cards');
-    const cards = tasks.map(task => {
-      const cardElem = document.createElement('task-card');
-      cardElem.task = task;
-      return cardElem;
-    });
-    container.append(...cards);
   }
 }
 
