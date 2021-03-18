@@ -4,7 +4,8 @@
 const registry = {};
 
 export const register = (name, factory) => {
-  if (name in registry) throw new Error(`Cannot register ${name}, already taken`);
+  if (name in registry)
+    throw new Error(`Cannot register ${name}, already taken`);
   registry[name] = factory;
 };
 
@@ -21,11 +22,11 @@ export function DependencyMixin(Base) {
       const { inject } = this.constructor;
       this.inject = this.inject || {};
       if (inject) {
-        inject.forEach(dep => provide(dep, this.inject));
-        if (typeof this.ready === 'function') {
+        inject.forEach((dep) => provide(dep, this.inject));
+        if (typeof this.ready === "function") {
           this.ready();
         }
       }
     }
-  }
+  };
 }

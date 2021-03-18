@@ -1,5 +1,5 @@
-import { DependencyMixin } from '../core/dependency.js';
-import { TASK_EVENTS } from '../events.js';
+import { DependencyMixin } from "../core/dependency.js";
+import { TASK_EVENTS } from "../events.js";
 
 let gloablId = 1;
 
@@ -7,19 +7,19 @@ let gloablId = 1;
  * @enum
  */
 export const TASK_STATE = {
-  TODO: 'todo',
-  IN_PROGRESS: 'in-progress',
-  DONE: 'done'
+  TODO: "todo",
+  IN_PROGRESS: "in-progress",
+  DONE: "done",
 };
 
 export function updateGlobalId(task) {
-  gloablId = Math.max(gloablId, task.taskId+1);
+  gloablId = Math.max(gloablId, task.taskId + 1);
 }
 
 export class Task extends DependencyMixin(Object) {
-  static inject = ['taskEventBus'];
+  static inject = ["taskEventBus"];
 
-  constructor(title = '', description = '', customId = gloablId) {
+  constructor(title = "", description = "", customId = gloablId) {
     super(title, description);
     this.taskId = customId;
     this._state = TASK_STATE.TODO;
@@ -29,38 +29,47 @@ export class Task extends DependencyMixin(Object) {
     updateGlobalId(this);
   }
 
-  get title() { return this._title; }
+  get title() {
+    return this._title;
+  }
   set title(v) {
     this._title = v;
-    if (this._isConstructed) this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
+    if (this._isConstructed)
+      this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
   }
 
-  get description() { return this._description; }
+  get description() {
+    return this._description;
+  }
   set description(v) {
     this._description = v;
-    if (this._isConstructed) this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
+    if (this._isConstructed)
+      this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
   }
 
-  get state() { return this._state; }
+  get state() {
+    return this._state;
+  }
   set state(v) {
     console.assert(Object.values(TASK_STATE).includes(v));
     this._state = v;
-    if (this._isConstructed) this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
+    if (this._isConstructed)
+      this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
   }
 
   toJSON() {
     const { state, description, title, taskId } = this;
-    return ({
+    return {
       state,
       description,
       title,
-      taskId
-    })
+      taskId,
+    };
   }
 }
 
 export class TaskList extends DependencyMixin(Object) {
-  static inject = ['taskEventBus'];
+  static inject = ["taskEventBus"];
 
   constructor() {
     super();
