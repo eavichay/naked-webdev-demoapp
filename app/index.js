@@ -12,8 +12,11 @@ const taskList = new TaskList();
 register('tasks', () => taskList);
 
 // launch the app
-import('./view/app-view.js');
-
-taskList.add();
-taskList.add();
-taskList.add();
+Promise.all([
+    import('./controllers/tasklist.js'),
+    import('./controllers/task.js'),
+]).then(() => {
+    taskList.add();
+    taskList.add();
+    taskList.add();
+});
