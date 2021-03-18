@@ -11,7 +11,7 @@ class TaskController extends BaseController {
     bus.on(TASK_EVENTS.TASK_ADDED, (task) => {
         const view = new TaskView();
         view.createView(task);
-        TaskListController.addTask(view);
+        TaskListController.addTaskToBoard(view);
     });
   }
 }

@@ -12,16 +12,21 @@ export const TASK_STATE = {
   DONE: 'done'
 };
 
+export function updateGlobalId(task) {
+  gloablId = Math.max(gloablId, task.taskId+1);
+}
+
 export class Task extends DependencyMixin(Object) {
   static inject = ['taskEventBus'];
 
-  constructor(title = '', description = '') {
+  constructor(title = '', description = '', customId = gloablId) {
     super(title, description);
-    this.taskId = gloablId++;
+    this.taskId = customId;
     this._state = TASK_STATE.TODO;
     this._title = title;
     this._description = description;
     this._isConstructed = true;
+    updateGlobalId(this);
   }
 
   get title() { return this._title; }
@@ -41,6 +46,16 @@ export class Task extends DependencyMixin(Object) {
     console.assert(Object.values(TASK_STATE).includes(v));
     this._state = v;
     if (this._isConstructed) this.inject.taskEventBus.broadcast(TASK_EVENTS.TASK_UPDATED, this);
+  }
+
+  toJSON() {
+    const { state, description, title, taskId } = this;
+    return ({
+      state,
+      description,
+      title,
+      taskId
+    })
   }
 }
 

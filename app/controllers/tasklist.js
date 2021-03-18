@@ -1,7 +1,6 @@
 import { BaseController } from "../core/controller.js";
 import { Pubsub } from "../core/pubsub.js";
 import { Task, TaskList } from '../model/task.js';
-import { TASK_EVENTS } from "../events.js";
 import { TaskView } from "../view/task.js";
 
 class TaskListController extends BaseController {
@@ -12,10 +11,14 @@ class TaskListController extends BaseController {
     const bus = this.inject.taskEventBus;
   }
 
+  createTask() {
+    TaskList.add();
+  }
+
   /**
    * @param {TaskView} taskview 
    */
-  addTask(taskView) {
+  addTaskToBoard(taskView) {
     /** @type {Task} */
     const task = taskView.model;
     const { state } = task;
